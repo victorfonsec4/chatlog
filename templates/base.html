@@ -3,9 +3,11 @@
 <head>
 <title>ChatLog</title>
 <script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"></script>
-<script type=text/javascript src="{{ url_for('static', filename='jquery-ui-1.10.4.js') }}"></script>
+<script type=text/javascript src="{{ url_for('static', filename='jquery-ui.js') }}"></script>
 <script type=text/javascript src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/bootstrap-responsive.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='jquery-ui.css') }}" rel="stylesheet">
 <meta charset="UTF-8">
 </head>
 <body>
@@ -103,11 +105,13 @@
           },
           minLength: 2
         }).data('ui-autocomplete')._renderItem = function(ul, item){
+                    ul.addClass("list-group");
                     var fb_pic_path = '<img src="http://graph.facebook.com/' + item.value + '/picture?type=square">' ;
                     return $("<li></li>")
                     .data("item.autocomplete", item)
                     .append( "<a>" + fb_pic_path + item.label + "</a>" )
-                    .appendTo(ul); 
+                    .appendTo(ul)
+                    .addClass("list-group-item"); 
           };
 
 
