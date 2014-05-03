@@ -42,10 +42,10 @@
 
   window.fbAsyncInit = function() {
     FB.init({
-      appId      : '1383224128630529',
+      appId      : '187128468107191',
       cookie     : true,  // enable cookies to allow the server to access 
       xfbml      : true,  // parse social plugins on this page
-      version    : 'v2.0' // use version 2.0
+      version    : 'v1.0' // use version 2.0
     });
 
     // Now that we've initialized the JavaScript SDK, we call 
@@ -63,7 +63,6 @@
     FB.getLoginStatus(function(response) {
       if (response.authResponse) {  // if the user is authorized...
         var accessToken = response.authResponse.accessToken
-        console.log(response.authResponse.accessToken);
         var tokenUrl = "https://graph.facebook.com/me/friends?access_token=" + accessToken + "&callback=?"
  
         // Place <input id="name" /> and <input id="fbuid" /> into HTML
@@ -92,9 +91,13 @@
           select: function(event, ui) {
             // Fill in the input fields
             $('#name').val(ui.item.label)
-            $('#fbuid').val(ui.item.value)
+            $('#fbuid').val(ui.item.label)
             // Prevent the value from being inserted in "#name"
             return false;
+          },
+          messages: {
+            noResults: '',
+            results: ''
           },
           minLength: 2
         });
@@ -123,7 +126,7 @@
   the FB.login() function when clicked.
 -->
 
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+<fb:login-button scope="public_profile,email,user_friends" onlogin="checkLoginState();">
 </fb:login-button>
 
 <div id="status"></div>
