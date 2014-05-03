@@ -1,6 +1,5 @@
 console.log("baixar");
 
-
 button=document.createElement("span");
 button.setAttribute("class", "uiButtonGroupItem buttonItem");
 link=document.createElement("a");
@@ -12,7 +11,7 @@ link.onclick = function()
 {
 	alert("Hello");
 	chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
-	  console.log(response.farewell);
+	  console.log();
 	});
 }
 image=document.createElement("i");

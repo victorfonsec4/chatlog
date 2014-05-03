@@ -4,7 +4,6 @@ if (localStorage.accessToken) {
 
 	var script = document.createElement("script");
 	script.src = graphUrl;
-	document.body.appendChild(script);
 
 	function displayUser(user) {
 		console.log(user);
