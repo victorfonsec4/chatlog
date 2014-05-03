@@ -21,6 +21,8 @@
     // Full docs on the response object can be found in the documentation
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
+	  x = document.getElementById("deletar");
+	  x.parentNode.removeChild(x);
       // Logged into your app and Facebook.
       // testAPI();
     } else if (response.status === 'not_authorized') {
@@ -146,7 +148,7 @@
 <p class="lead">Discover how your friendships started!</p>
 </div>
 <div style="text-align: center">
-<fb:login-button scope="public_profile,email,user_friends,read_mailbox" onlogin="checkLoginState();"></fb:login-button>
+<fb:login-button scope id="deletar" ="public_profile,email,user_friends,read_mailbox" onlogin="checkLoginState();"></fb:login-button>
 <br/><br/>
 </div>
 <div id="status"></div>
