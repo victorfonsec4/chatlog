@@ -100,7 +100,14 @@
             results: ''
           },
           minLength: 2
-        });
+        }).data('ui-autocomplete')._renderItem = function(ul, item){
+                    var fb_pic_path = '<img src="http://graph.facebook.com/' + item.value + '/picture?type=square">' ;
+                    console.log(fb_pic_path);
+                    return $("<li></li>")
+                    .data("item.autocomplete", item)
+                    .append( "<a>" + fb_pic_path + item.label + "</a>" )
+                    .appendTo(ul); 
+          };
       }
     });
 
