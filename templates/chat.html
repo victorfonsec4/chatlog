@@ -148,6 +148,9 @@
 			  lista.push({autor:response.data[j].fql_result_set[i].author_id, texto:response.data[j].fql_result_set[i].body,tempo: response.data[j].fql_result_set[i].created_time});
 		  }
 	  }
+	});
+	function imprimir()
+	{
 	  lista = lista.sort(function(a, b){
 		  return a.tempo - b.tempo;
 	  });
@@ -179,7 +182,7 @@
 		  resposta += "<br><br>";
 	  }
 	  document.getElementById('status').innerHTML = resposta;
-    });
+    }
   }
 </script>
 
