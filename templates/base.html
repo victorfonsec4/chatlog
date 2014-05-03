@@ -4,9 +4,11 @@
 <title>ChatLog</title>
 <script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"></script>
 <script type=text/javascript src="{{ url_for('static', filename='jquery-ui-1.10.4.js') }}"></script>
+<script type=text/javascript src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
 <meta charset="UTF-8">
 </head>
-<body>
+<body style='text-align: center'>
 <script>
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
@@ -90,8 +92,8 @@
           },
           select: function(event, ui) {
             // Fill in the input fields
-            $('#name').val(ui.item.label)
-            $('#fbuid').val(ui.item.label)
+            $('#name').val(ui.item.value)
+            $('#fbuid').val(ui.item.value)
             // Prevent the value from being inserted in "#name"
             return false;
           },
@@ -101,13 +103,16 @@
           },
           minLength: 2
         }).data('ui-autocomplete')._renderItem = function(ul, item){
+                    $(ul).css('width', '200px');
                     var fb_pic_path = '<img src="http://graph.facebook.com/' + item.value + '/picture?type=square">' ;
-                    console.log(fb_pic_path);
                     return $("<li></li>")
                     .data("item.autocomplete", item)
                     .append( "<a>" + fb_pic_path + item.label + "</a>" )
                     .appendTo(ul); 
           };
+
+
+
       }
     });
 
@@ -124,6 +129,7 @@
     js.src = "//connect.facebook.net/en_US/sdk.js";
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
+
   
 </script>
 
@@ -132,10 +138,10 @@
   the JavaScript SDK to present a graphical Login button that triggers
   the FB.login() function when clicked.
 -->
-
-<fb:login-button scope="public_profile,email,user_friends" onlogin="checkLoginState();">
-</fb:login-button>
-
+<div style="width:70%; margin:0 auto;">
+<fb:login-button scope="public_profile,email,user_friends" onlogin="checkLoginState();"></fb:login-button>
+<br/><br/>
+</div>
 <div id="status"></div>
 {% block body %}{% endblock %}
 </body>
