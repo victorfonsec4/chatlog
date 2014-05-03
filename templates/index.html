@@ -5,8 +5,17 @@
 <meta charset="UTF-8">
 </head>
 <body>
+<script src="http://momentjs.com/downloads/moment.min.js"></script>
 <script>
   var lista = [];
+  var listaQuerries = {};
+  var numMsgs = 0;
+  var rodou = 0;
+  var meuNome = "";
+  var nomeAmigo = "";
+  //var id = window.user_id;
+  var id = 100001031340768;
+  var resposta = "";
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
     console.log('statusChangeCallback');
@@ -17,7 +26,7 @@
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
-      testAPI(0);
+	  pegarNomes();
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
       document.getElementById('status').innerHTML = 'Please log ' +
@@ -41,11 +50,11 @@
 
   window.fbAsyncInit = function() {
   FB.init({
-    appId      : 1383224128630529,
+    appId      : 187128468107191,
     cookie     : true,  // enable cookies to allow the server to access
                         // the session
     xfbml      : true,  // parse social plugins on this page
-    version    : 'v2.0' // use version 2.0
+    version    : 'v1.0' // use version 2.0
   });
 
   // Now that we've initialized the JavaScript SDK, we call
@@ -77,23 +86,85 @@
 
   // Here we run a very simple test of the Graph API after login is
   // successful.  See statusChangeCallback() for when this call is made.
-  function testAPI(ini) {
-	console.log();
-	aSize = 1;
-	querry = "SELECT author_id, body, created_time FROM message WHERE thread_id IN (SELECT thread_id FROM thread WHERE folder_id = 1 AND 100001031340768 IN (recipients)) limit "+ ini + ", 70";
-	console.log(ini);
-	console.log(querry);
-    FB.api('/fql', {q:{"query1":querry}}, function(response) {
-	  console.log(response);
-	  aSize = response.data[0].fql_result_set.length;
-	  if(aSize > 0)
+  function createQuerries(ini, aSize, n) {
+	//console.log();
+	querry = "SELECT author_id, body, created_time FROM message WHERE thread_id IN (SELECT thread_id FROM thread WHERE folder_id = 1 AND " + id + " IN (recipients)) limit "+ ini + ", " + aSize;
+	key = "querry"+n;
+	listaQuerries[key] = querry;
+	//listaQuerries.push("querry" + n:querry);
+	//console.log(ini);
+	//console.log(numMsgs);
+	//console.log("querry do create");
+	//console.log(querry);
+	if(ini < numMsgs)
+		createQuerries(ini + aSize, aSize, n+1);
+	else if(rodou == 0)
+	{
+		makeQueries();
+		rodou = 1;
+	}
+  }
+  function pegarNomes()
+  {
+	  FB.api("/100001031340768", {fields: 'name'}, function(response)
 	  {
-		  console.log("quarto");
-		  messages = "";
-		  for(var i = 0; i < aSize; i++)
-			  lista.push({texto:response.data[0].fql_result_set[i].body,tempo: response.data[0].fql_result_set[i].created_time});
-		  testAPI(ini + 70);
+		  console.log(response);
+		  nomeAmigo = response.name;
+		  getNameMeu();
+	  });
+  }
+  function getNameMeu()
+  {
+	  FB.api('/me', {fields: 'name'}, function(response)
+	  {
+		  console.log(response);
+		  meuNome = response.name;
+		  countMessages();
+	  });
+  }
+  function countMessages()
+  {
+	  FB.api('/fql', {q:{"querry1":"SELECT message_count FROM thread WHERE folder_id = 1 AND " + id + " IN (recipients)"}}, function(response)
+	  {
+		  console.log("reposta do count");
+		  console.log(response);
+		  numMsgs = response.data[0].fql_result_set[0].message_count;
+		  //console.log(numMsgs);
+		  createQuerries(0, 70, 1);
+	  });
+  }
+  function makeQueries() {
+	//console.log(listaQuerries);
+    FB.api('/fql', {q:listaQuerries}, function(response) {
+	  //console.log("resposta do make");
+	  console.log(response);
+	  messages = "";
+	  for(var j = 0; j < response.data.length;j++)
+	  {
+		  //console.log(j);
+		  for(var i = 0; i < response.data[j].fql_result_set.length; i++)
+		  {
+			  lista.push({autor:response.data[j].fql_result_set[i].author_id, texto:response.data[j].fql_result_set[i].body,tempo: response.data[j].fql_result_set[i].created_time});
+		  }
 	  }
+	  lista = lista.sort(function(a, b){
+		  return a.tempo - b.tempo;
+	  });
+
+	  for(var i = 0; i < lista.length; i++)
+	  {
+		  if(lista[i].autor == id)
+			  resposta += nomeAmigo;
+	      else
+			  resposta += meuNome;
+		  resposta += "<br>";
+		  resposta += lista[i].texto;
+		  resposta += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
+		  created_date = new Date(lista[i].tempo * 1000);
+		  resposta += moment(created_date).format();
+		  resposta += "<br><br>";
+	  }
+	  document.getElementById('status').innerHTML = resposta;
     });
   }
 </script>
