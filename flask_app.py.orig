@@ -1,4 +1,3 @@
-
 # A very simple Flask Hello World app for you to get started with...
 
 from flask import Flask
@@ -36,12 +35,16 @@ Social(app, SQLAlchemyConnectionDatastore(db, Connection))
 def chatlog():
     return render_template('iframe.html')
 
+<<<<<<< HEAD
 @app.route('/profile')
 @login_required
 def profile():
     return render_template(
         'profile.html',
         content='Profile Page',
-        facebook_conn=social.facebook.get_connection())
+        facebook_conn=social.facebook.get_connection(),
+=======
 if __name__ == "__main__":
     app.run()
+>>>>>>> 0a1c9d75ca4fd2e3bc4bc26cd7caa73d5e6345de
+

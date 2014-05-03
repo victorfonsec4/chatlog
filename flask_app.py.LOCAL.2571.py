@@ -33,7 +33,7 @@ Security(app, SQLAlchemyUserDatastore(db, User, Role))
 Social(app, SQLAlchemyConnectionDatastore(db, Connection))
 
 @app.route('/')
-def chatlog():
+def hello_world():
     return render_template('iframe.html')
 
 @app.route('/profile')
@@ -42,6 +42,5 @@ def profile():
     return render_template(
         'profile.html',
         content='Profile Page',
-        facebook_conn=social.facebook.get_connection())
-if __name__ == "__main__":
-    app.run()
+        facebook_conn=social.facebook.get_connection(),
+
