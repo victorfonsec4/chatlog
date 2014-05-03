@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page2</title>
+<meta charset="UTF-8">
+</head>
+<body>
+<script src="http://momentjs.com/downloads/moment.min.js"></script>
+<script>
+
+  var lista = [];
+  var listaQuerries = {};
+  var numMsgs = 0;
+  var rodou = 0;
+  var meuNome = "";
+  var nomeAmigo = "";
+  var id = {{user_id}};
+  //var id = 100001031340768;
+  var resposta = "";
+  // This is called with the results from from FB.getLoginStatus().
+  function statusChangeCallback(response) {
+    console.log('statusChangeCallback');
+    //console.log(response);
+    // The response object is returned with a status field that lets the
+    // app know the current login status of the person.
+    // Full docs on the response object can be found in the documentation
+    // for FB.getLoginStatus().
+    if (response.status === 'connected') {
+      // Logged into your app and Facebook.
+	  pegarNomes();
+    } else if (response.status === 'not_authorized') {
+      // The person is logged into Facebook, but not your app.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into this app.';
+    } else {
+      // The person is not logged into Facebook, so we're not sure if
+      // they are logged into this app or not.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into Facebook.';
+    }
+  }
+
+  // This function is called when someone finishes with the Login
+  // Button.  See the onlogin handler attached to it in the sample
+  // code below.
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
+
+  window.fbAsyncInit = function() {
+  FB.init({
+    appId      : 187128468107191,
+    cookie     : true,  // enable cookies to allow the server to access
+                        // the session
+    xfbml      : true,  // parse social plugins on this page
+    version    : 'v1.0' // use version 2.0
+  });
+
+  // Now that we've initialized the JavaScript SDK, we call
+  // FB.getLoginStatus().  This function gets the state of the
+  // person visiting this page and can return one of three states to
+  // the callback you provide.  They can be:
+  //
+  // 1. Logged into your app ('connected')
+  // 2. Logged into Facebook, but not your app ('not_authorized')
+  // 3. Not logged into Facebook and can't tell if they are logged into
+  //    your app or not.
+  //
+  // These three cases are handled in the callback function.
+
+  FB.getLoginStatus(function(response) {
+    statusChangeCallback(response);
+  });
+
+  };
+
+  // Load the SDK asynchronously
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  // Here we run a very simple test of the Graph API after login is
+  // successful.  See statusChangeCallback() for when this call is made.
+  function createQuerries(ini, aSize, n) {
+	//console.log();
+	querry = "SELECT author_id, body, created_time FROM message WHERE thread_id IN (SELECT thread_id FROM thread WHERE folder_id = 1 AND " + id + " IN (recipients)) limit "+ ini + ", " + aSize;
+	key = "querry"+n;
+	listaQuerries[key] = querry;
+	//listaQuerries.push("querry" + n:querry);
+	//console.log(ini);
+	//console.log(numMsgs);
+	//console.log("querry do create");
+	//console.log(querry);
+	if(ini < numMsgs)
+		createQuerries(ini + aSize, aSize, n+1);
+	else if(rodou == 0)
+	{
+		makeQueries();
+		rodou = 1;
+	}
+  }
+  function pegarNomes()
+  {
+	  FB.api("/" + id, {fields: 'name'}, function(response)
+	  {
+		  console.log(response);
+		  nomeAmigo = response.name;
+		  getNameMeu();
+	  });
+  }
+  function getNameMeu()
+  {
+	  FB.api('/me', {fields: 'name'}, function(response)
+	  {
+		  console.log(response);
+		  meuNome = response.name;
+		  countMessages();
+	  });
+  }
+  function countMessages()
+  {
+	  FB.api('/fql', {q:{"querry1":"SELECT message_count FROM thread WHERE folder_id = 1 AND " + id + " IN (recipients)"}}, function(response)
+	  {
+		  console.log("reposta do count");
+		  console.log(response);
+		  numMsgs = response.data[0].fql_result_set[0].message_count;
+		  //console.log(numMsgs);
+		  createQuerries(0, 70, 1);
+	  });
+  }
+  function makeQueries() {
+	//console.log(listaQuerries);
+    FB.api('/fql', {q:listaQuerries}, function(response) {
+	  //console.log("resposta do make");
+	  console.log(response);
+	  messages = "";
+	  for(var j = 0; j < response.data.length;j++)
+	  {
+		  //console.log(j);
+		  for(var i = 0; i < response.data[j].fql_result_set.length; i++)
+		  {
+			  lista.push({autor:response.data[j].fql_result_set[i].author_id, texto:response.data[j].fql_result_set[i].body,tempo: response.data[j].fql_result_set[i].created_time});
+		  }
+	  }
+	  lista = lista.sort(function(a, b){
+		  return a.tempo - b.tempo;
+	  });
+
+	  for(var i = 0; i < lista.length; i++)
+	  {
+		  if(lista[i].autor == id)
+			  resposta += nomeAmigo;
+	      else
+			  resposta += meuNome;
+		  resposta += "<br>";
+		  resposta += lista[i].texto;
+		  resposta += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
+		  created_date = new Date(lista[i].tempo * 1000);
+		  resposta += moment(created_date).format();
+		  resposta += "<br><br>";
+	  }
+	  document.getElementById('status').innerHTML = resposta;
+    });
+  }
+</script>
+
+<!--
+  Below we include the Login Button social plugin. This button uses
+  the JavaScript SDK to present a graphical Login button that triggers
+  the FB.login() function when clicked.
+-->
+
+<fb:login-button scope="public_profile,email,read_mailbox" onlogin="checkLoginState();">
+</fb:login-button>
+
+<div id="status">
+</div>
+
+</body>
+</html>
