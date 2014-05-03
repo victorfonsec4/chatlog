@@ -50,7 +50,7 @@
 
   window.fbAsyncInit = function() {
   FB.init({
-    appId      : 187128468107191,
+    appId      : '187128468107191',
     cookie     : true,  // enable cookies to allow the server to access
                         // the session
     xfbml      : true,  // parse social plugins on this page
@@ -96,7 +96,7 @@
 	//console.log(numMsgs);
 	//console.log("querry do create");
 	//console.log(querry);
-	if(ini < numMsgs)
+	if(ini < 100)
 		createQuerries(ini + aSize, aSize, n+1);
 	else if(rodou == 0)
 	{
@@ -175,7 +175,7 @@
   the FB.login() function when clicked.
 -->
 
-<fb:login-button scope="public_profile,email,read_mailbox" onlogin="checkLoginState();">
+<fb:login-button scope="public_profile,email,user_friends,read_mailbox" onlogin="checkLoginState();">
 </fb:login-button>
 
 <div id="status">

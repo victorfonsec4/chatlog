@@ -8,12 +8,12 @@
 <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
 <meta charset="UTF-8">
 </head>
-<body style='text-align: center'>
+<body>
 <script>
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
-    console.log('statusChangeCallback');
-    console.log(response);
+    //console.log('statusChangeCallback');
+    //console.log(response);
     // The response object is returned with a status field that lets the
     // app know the current login status of the person.
     // Full docs on the response object can be found in the documentation
@@ -99,11 +99,10 @@
           },
           messages: {
             noResults: '',
-            results: ''
+            results: function(){}
           },
           minLength: 2
         }).data('ui-autocomplete')._renderItem = function(ul, item){
-                    $(ul).css('width', '200px');
                     var fb_pic_path = '<img src="http://graph.facebook.com/' + item.value + '/picture?type=square">' ;
                     return $("<li></li>")
                     .data("item.autocomplete", item)
@@ -138,8 +137,12 @@
   the JavaScript SDK to present a graphical Login button that triggers
   the FB.login() function when clicked.
 -->
-<div style="width:70%; margin:0 auto;">
-<fb:login-button scope="public_profile,email,user_friends" onlogin="checkLoginState();"></fb:login-button>
+<div style="text-align: center">
+<h1>chatLog</h1>
+<p class="lead">Login with Facebook and be able to download your conversations</p>
+</div>
+<div style="text-align: center">
+<fb:login-button scope="public_profile,email,user_friends,read_mailbox" onlogin="checkLoginState();"></fb:login-button>
 <br/><br/>
 </div>
 <div id="status"></div>
