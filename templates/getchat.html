@@ -24,7 +24,8 @@ function post_to_url(path, params, method) {
     form.submit();
 }
 </script>
-<div>
+<div style="text-align: center">
+<p class="lead">Choose a friend and click enter</p>
 <input id="name" type="text" onkeydown="if (event.keyCode == 13) { post_to_url(/chat/,{id:document.getElementById('name').value});return false;}"/>
 </div>
 {% endblock %}
