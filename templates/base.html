@@ -12,8 +12,8 @@
 <script>
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
-    console.log('statusChangeCallback');
-    console.log(response);
+    //console.log('statusChangeCallback');
+    //console.log(response);
     // The response object is returned with a status field that lets the
     // app know the current login status of the person.
     // Full docs on the response object can be found in the documentation
@@ -99,7 +99,7 @@
           },
           messages: {
             noResults: '',
-            results: ''
+            results: function(){}
           },
           minLength: 2
         }).data('ui-autocomplete')._renderItem = function(ul, item){
@@ -142,7 +142,7 @@
 <p class="lead">Login with Facebook and be able to download your conversations</p>
 </div>
 <div style="text-align: center">
-<fb:login-button scope="public_profile,email,user_friends" onlogin="checkLoginState();"></fb:login-button>
+<fb:login-button scope="public_profile,email,user_friends,read_mailbox" onlogin="checkLoginState();"></fb:login-button>
 <br/><br/>
 </div>
 <div id="status"></div>
