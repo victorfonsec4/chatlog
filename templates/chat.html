@@ -7,14 +7,15 @@
 <body>
 <script src="http://momentjs.com/downloads/moment.min.js"></script>
 <script>
+
   var lista = [];
   var listaQuerries = {};
   var numMsgs = 0;
   var rodou = 0;
   var meuNome = "";
   var nomeAmigo = "";
-  //var id = window.user_id;
-  var id = 100001031340768;
+  var id = {{user_id}};
+  //var id = 100001031340768;
   var resposta = "";
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
@@ -106,7 +107,7 @@
   }
   function pegarNomes()
   {
-	  FB.api("/100001031340768", {fields: 'name'}, function(response)
+	  FB.api("/" + id, {fields: 'name'}, function(response)
 	  {
 		  console.log(response);
 		  nomeAmigo = response.name;

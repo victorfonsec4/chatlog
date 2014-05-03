@@ -3,6 +3,7 @@
 
 from flask import Flask
 from flask import render_template
+from flask import request
 from flask.ext.social import Social
 from flask.ext.social.datastore import SQLAlchemyConnectionDatastore
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -67,9 +68,11 @@ def profile():
         content='Profile Page',
         facebook_conn=social.facebook.get_connection())
 
-@app.route('/index')
+@app.route('/chat/', methods=['POST'])
 def page2():
-	return render_template('index.html')
+	user_id = request.form['id'];
+	return render_template('chat.html', user_id=user_id)
+
 @app.route('/teste')
 def teste():
 	return render_template('teste.html')
