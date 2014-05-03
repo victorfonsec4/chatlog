@@ -58,28 +58,12 @@ Social(app, SQLAlchemyConnectionDatastore(db, Connection))
 @app.route('/')
 @app.route('/index')
 def chatlog():
-    return render_template('login.html')
-
-@app.route('/profile')
-@login_required
-def profile():
-    return render_template(
-        'profile.html',
-        content='Profile Page',
-        facebook_conn=social.facebook.get_connection())
+    return render_template('getchat.html')
 
 @app.route('/chat/', methods=['POST'])
 def page2():
 	user_id = request.form['id'];
 	return render_template('chat.html', user_id=user_id)
-
-@app.route('/teste')
-def teste():
-	return render_template('teste.html')
-
-@app.route('/getChat')
-def getChat():
-	return render_template('getchat.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
