@@ -55,6 +55,7 @@ Security(app, SQLAlchemyUserDatastore(db, User, Role))
 Social(app, SQLAlchemyConnectionDatastore(db, Connection))
 
 @app.route('/')
+@app.route('/index')
 def chatlog():
     return render_template('login.html')
 
@@ -72,6 +73,10 @@ def page2():
 @app.route('/teste')
 def teste():
 	return render_template('teste.html')
+
+@app.route('/getChat')
+def getChat():
+	return render_template('getchat.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

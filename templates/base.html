@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ChatLog</title>
+<script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"></script>
+<script type=text/javascript src="{{ url_for('static', filename='jquery-ui-1.10.4.js') }}"></script>
+<script type=text/javascript src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+<meta charset="UTF-8">
+</head>
+<body style='text-align: center'>
+<script>
+  // This is called with the results from from FB.getLoginStatus().
+  function statusChangeCallback(response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+    // The response object is returned with a status field that lets the
+    // app know the current login status of the person.
+    // Full docs on the response object can be found in the documentation
+    // for FB.getLoginStatus().
+    if (response.status === 'connected') {
+      // Logged into your app and Facebook.
+      // testAPI();
+    } else if (response.status === 'not_authorized') {
+      // The person is logged into Facebook, but not your app.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into this app.';
+    } else {
+      // The person is not logged into Facebook, so we're not sure if
+      // they are logged into this app or not.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into Facebook.';
+    }
+  }
+
+  // This function is called when someone finishes with the Login
+  // Button.  See the onlogin handler attached to it in the sample
+  // code below.
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '187128468107191',
+      cookie     : true,  // enable cookies to allow the server to access 
+      xfbml      : true,  // parse social plugins on this page
+      version    : 'v1.0' // use version 2.0
+    });
+
+    // Now that we've initialized the JavaScript SDK, we call 
+    // FB.getLoginStatus().  This function gets the state of the
+    // person visiting this page and can return one of three states to
+    // the callback you provide.  They can be:
+    //
+    // 1. Logged into your app ('connected')
+    // 2. Logged into Facebook, but not your app ('not_authorized')
+    // 3. Not logged into Facebook and can't tell if they are logged into
+    //    your app or not.
+    //
+    // These three cases are handled in the callback function.
+
+    FB.getLoginStatus(function(response) {
+      if (response.authResponse) {  // if the user is authorized...
+        var accessToken = response.authResponse.accessToken
+        var tokenUrl = "https://graph.facebook.com/me/friends?access_token=" + accessToken + "&callback=?"
+ 
+        // Place <input id="name" /> and <input id="fbuid" /> into HTML
+ 
+        $("#name").autocomplete({
+          source: function(request, add) {
+            $this = $(this)
+            // Call out to the Graph API for the friends list
+            $.ajax({
+              url: tokenUrl,
+              dataType: "jsonp",
+              success: function(results){
+                // Filter the results and return a label/value object array  
+                var formatted = [];
+                for(var i = 0; i< results.data.length; i++) {
+                  if (results.data[i].name.toLowerCase().indexOf($('#name').val().toLowerCase()) >= 0)
+                  formatted.push({
+                    label: results.data[i].name,
+                    value: results.data[i].id
+                  })
+                }
+                add(formatted);
+              }
+            });
+          },
+          select: function(event, ui) {
+            // Fill in the input fields
+            $('#name').val(ui.item.value)
+            $('#fbuid').val(ui.item.value)
+            // Prevent the value from being inserted in "#name"
+            return false;
+          },
+          messages: {
+            noResults: '',
+            results: ''
+          },
+          minLength: 2
+        }).data('ui-autocomplete')._renderItem = function(ul, item){
+                    $(ul).css('width', '200px');
+                    var fb_pic_path = '<img src="http://graph.facebook.com/' + item.value + '/picture?type=square">' ;
+                    return $("<li></li>")
+                    .data("item.autocomplete", item)
+                    .append( "<a>" + fb_pic_path + item.label + "</a>" )
+                    .appendTo(ul); 
+          };
+
+
+
+      }
+    });
+
+
+
+  };
+
+
+  // Load the SDK asynchronously
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  
+</script>
+
+<!--
+  Below we include the Login Button social plugin. This button uses
+  the JavaScript SDK to present a graphical Login button that triggers
+  the FB.login() function when clicked.
+-->
+<div style="width:70%; margin:0 auto;">
+<fb:login-button scope="public_profile,email,user_friends" onlogin="checkLoginState();"></fb:login-button>
+<br/><br/>
+</div>
+<div id="status"></div>
+{% block body %}{% endblock %}
+</body>
+</html>
