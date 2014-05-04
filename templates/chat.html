@@ -107,7 +107,7 @@ Object.size = function(obj) {
 	//console.log(numMsgs);
 	//console.log("querry do create");
 	//console.log(querry);
-	if(ini < 300)
+	if(ini < 300 || ini < numMsgs)
 		createQuerries(ini + aSize, aSize, n+1);
 	else if(rodou == 0)
 	{

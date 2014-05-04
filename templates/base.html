@@ -49,12 +49,12 @@
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '187128468107191',
-      cookie     : true,  // enable cookies to allow the server to access 
+      cookie     : true,  // enable cookies to allow the server to access
       xfbml      : true,  // parse social plugins on this page
       version    : 'v1.0' // use version 2.0
     });
 
-    // Now that we've initialized the JavaScript SDK, we call 
+    // Now that we've initialized the JavaScript SDK, we call
     // FB.getLoginStatus().  This function gets the state of the
     // person visiting this page and can return one of three states to
     // the callback you provide.  They can be:
@@ -70,9 +70,9 @@
       if (response.authResponse) {  // if the user is authorized...
         var accessToken = response.authResponse.accessToken
         var tokenUrl = "https://graph.facebook.com/me/friends?access_token=" + accessToken + "&callback=?"
- 
+
         // Place <input id="name" /> and <input id="fbuid" /> into HTML
- 
+
         $("#name").autocomplete({
           source: function(request, add) {
             $this = $(this)
@@ -81,7 +81,7 @@
               url: tokenUrl,
               dataType: "jsonp",
               success: function(results){
-                // Filter the results and return a label/value object array  
+                // Filter the results and return a label/value object array
                 var formatted = [];
                 for(var i = 0; i< results.data.length; i++) {
                   if (results.data[i].name.toLowerCase().indexOf($('#name').val().toLowerCase()) >= 0)
@@ -113,7 +113,7 @@
                     .data("item.autocomplete", item)
                     .append( "<a>" + fb_pic_path + item.label + "</a>" )
                     .appendTo(ul)
-                    .addClass("list-group-item"); 
+                    .addClass("list-group-item");
           };
 
 
@@ -135,7 +135,7 @@
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
 
-  
+
 </script>
 
 <!--
@@ -148,7 +148,7 @@
 <p class="lead">Discover how your friendships started!</p>
 </div>
 <div style="text-align: center">
-<fb:login-button scope id="deletar" ="public_profile,email,user_friends,read_mailbox" onlogin="checkLoginState();"></fb:login-button>
+<fb:login-button id="deletar" scope="public_profile,email,user_friends,read_mailbox" onlogin="checkLoginState();"></fb:login-button>
 <br/><br/>
 </div>
 <div id="status"></div>
